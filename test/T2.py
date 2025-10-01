@@ -44,7 +44,7 @@ class SerialReader(QThread):
 
 class MotorPanel(QWidget):
     # 50 Hz ~ 2800 RPM => ~56 RPM/Hz (đặt 50 cho an toàn)
-    RPM_PER_HZ = 50
+    RPM_PER_HZ = 46
     HZ_MIN = 0
     HZ_MAX = 60
 
@@ -66,8 +66,8 @@ class MotorPanel(QWidget):
 
         # ====== Giới hạn hiển thị RPM ======
         self.RPM_MIN = 0
-        self.RPM_MAX = 3000
-        self.RPM_STEP = 50
+        self.RPM_MAX = 2760
+        self.RPM_STEP = 46
 
         # ====== Style chung ======
         self.setStyleSheet("""
@@ -268,7 +268,7 @@ class MotorPanel(QWidget):
             if m_hz:
                 self.hz = int(m_hz.group(1))
             if m_rpm:
-                self.rpm = int(m_rpm.group(1))
+                self.rpm = self.hz * self.RPM_PER_HZ
             else:
                 self.rpm = self.hz * self.RPM_PER_HZ
 

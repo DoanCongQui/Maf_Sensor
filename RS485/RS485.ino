@@ -11,6 +11,12 @@ SoftwareSerial rs485Serial(10, 11); // RX = 10, TX = 11
 const int RS485_DE = 9;
 const int RS485_RE = 9;
 
+// Sensor
+const int vgPin = A0; 
+float vgVoltage = 0.0; 
+float airFlow = 0.0; // Luu luong khong khi (g/s)
+int MAX_VALUE = 120; // Thay doi gia tri max cua cam bien 
+
 // Frequency control parameters
 static const float SCALE = 166.6667f; // PWM 
 static const int MAX_RPM = 3000;
@@ -50,6 +56,8 @@ int hzToRpm(int hz) {
 }
 
 void hzIncrease(int fHz, int secondsF){
+  vgVoltage = analogRead(vgPin) * (5.0 / 1023.0);
+  airFlow = (vgVoltage - 0.5) * (MAX_VALUE / (4.5 - 0.5));
   if (inverterRunning && !stopHold && (millis() - lastAutoIncMs >= secondsF)) {
     lastAutoIncMs = millis();
     if (hzTarget < 60) {
@@ -65,13 +73,16 @@ void sendStatus() {
   Serial.print("STATUS hz=");   Serial.print(hzTarget);
   Serial.print(" rpm=");        Serial.print(rpm);
   Serial.print(" run=");        Serial.print(inverterRunning ? 1 : 0);
-  Serial.print(" hold=");       Serial.println(stopHold ? 1 : 0);
+  Serial.print(" hold=");       Serial.print(stopHold ? 1 : 0);
+  Serial.print(" flow=");       Serial.print(airFlow);
+  Serial.print(" volt=");       Serial.println(vgVoltage);
 }
 
 // ======================= MAIN =========================
 void setup() {
   pinMode(RS485_DE, OUTPUT);
   pinMode(RS485_RE, OUTPUT);
+  pinMode(vgPin, INPUT);
   digitalWrite(RS485_DE, LOW);
   digitalWrite(RS485_RE, LOW);
 
@@ -174,5 +185,6 @@ void loop() {
 
   // Tang tang so 
   hzIncrease(1, 2000);
+  
   
 }

@@ -5,6 +5,7 @@ import sys, os, csv, re, time, argparse, threading, queue, signal
 import serial
 
 PORT = "/dev/ttyACM0"
+# PORT = "COM3"
 FILE = "runlog.csv"
 
 STATUS_RE = re.compile(
@@ -69,7 +70,7 @@ def graceful_stop(ser):
 
 def main():
     parser = argparse.ArgumentParser(description="Điều khiển biến tần qua Arduino và ghi log STATUS (mỗi 10s).")
-    parser.add_argument("--port", default="/dev/ttyACM0", help="Cổng nối tiếp tới Arduino (/dev/ttyUSB0, /dev/rfcomm0)")
+    parser.add_argument("--port", default=PORT, help="Cổng nối tiếp tới Arduino (/dev/ttyUSB0, /dev/rfcomm0)")
     parser.add_argument("--baud", type=int, default=115200, help="Baudrate (mặc định 115200)")
     parser.add_argument("--mode", choices=["fixed", "ramp"], default="fixed", help="fixed = tần số cố định, ramp = tăng dần")
     parser.add_argument("--hz", type=int, default=30, help="Tần số đặt khi fixed (0..60)")
@@ -78,7 +79,7 @@ def main():
     parser.add_argument("--ramp-step", type=int, default=5)
     parser.add_argument("--ramp-interval", type=float, default=10.0)
     parser.add_argument("--duration", type=float, default=0.0, help="Thời lượng chạy (0 = vô hạn)")
-    parser.add_argument("--csv", default="runlog.csv", help="Đường dẫn file CSV output")
+    parser.add_argument("--csv", default=FILE, help="Đường dẫn file CSV output")
     args = parser.parse_args()
 
     # Mở cổng serial

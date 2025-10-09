@@ -4,6 +4,9 @@
 import sys, os, csv, re, time, argparse, threading, queue, signal
 import serial
 
+PORT = "/dev/ttyACM0"
+FILE = "runlog.csv"
+
 STATUS_RE = re.compile(
     r"^STATUS\s+hz=(?P<hz>\d+)\s+rpm=(?P<rpm>-?\d+(?:\.\d+)?)\s+run=(?P<run>[01])\s+hold=(?P<hold>[01])\s+"
     r"flow1=(?P<flow1>-?\d+(?:\.\d+)?)\s+volt1=(?P<volt1>-?\d+(?:\.\d+)?)\s+"
